@@ -1,9 +1,41 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import {render, fireEvent, waitForElement} from '@testing-library/react';
 import App from './App';
 
-test('renders learn react link', () => {
-  const { getByText } = render(<App />);
-  const linkElement = getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+describe('Test routing', () => {
+    test('Verify home page content', () => {
+        const {container} = render(<App/>);
+        const pageHeaderContent = container.querySelector("#pageHeader")
+            ?.firstChild
+            ?.textContent;
+        expect(pageHeaderContent).toMatch('Home page');
+    });
+
+    test('Navigate to news', async () => {
+        const {container} = render(<App/>);
+
+        const pageHeaderContent = container.querySelector("#pageHeader")
+            ?.firstChild
+            ?.textContent;
+        expect(pageHeaderContent).toMatch('Home page');
+
+        const linkToNewsElement: Element = (container.querySelector('#linkToNews') as Element);
+        fireEvent.click(linkToNewsElement);
+        const pageHeaderContentAfterClick = await waitForElement(() => container.querySelector('#pageHeader')?.firstChild?.textContent);
+        expect(pageHeaderContentAfterClick).toMatch('News page');
+    });
+
+    test('Navigate to about', async () => {
+        const {container} = render(<App/>);
+
+        const pageHeaderContent = container.querySelector("#pageHeader")
+            ?.firstChild
+            ?.textContent;
+        expect(pageHeaderContent).toMatch('Home page');
+
+        const linkToAboutElement: Element = (container.querySelector('#linkToAbout') as Element);
+        fireEvent.click(linkToAboutElement);
+        const pageHeaderContentAfterClick = await waitForElement(() => container.querySelector('#pageHeader')?.firstChild?.textContent);
+        expect(pageHeaderContentAfterClick).toMatch('About page');
+    });
 });
